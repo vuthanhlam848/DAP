@@ -7,17 +7,17 @@ class heat_map:
         self.height = height
         self.heat_map = np.zeros((height, width))
         
-    def update_heat_map(self, mask):
+    def update_heat_map(self, mask, accumulative_heat_map):
         """
         Cập nhật bản đồ nhiệt
         Args:
             mask: ma trận mask của người
         """
-        accumulative_heat_map = self.heat_map + mask
+        accumulative_heat_map += mask
         self.heat_map = np.clip(accumulative_heat_map, 0, 1)
         colored_mask = cv2.applyColorMap(np.uint8(255*mask), cv2.COLORMAP_JET)
         result_mask = cv2.addWeighted(self.heat_map, 0.5, colored_mask, 0.5, 0)
-        return result_mask
+        return result_mask, accumulative_heat_map
 
     def reset_heat_map(self):
         """
